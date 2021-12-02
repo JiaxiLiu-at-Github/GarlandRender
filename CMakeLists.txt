@@ -27,7 +27,7 @@ set(LIBRARIES
 )
 
 if(WIN32)
-	set(dx11_libs d3d11 d3dx11 D3DCompiler)
+	set(dx11_libs d3d11)
 	find_directX("${dx11_libs}")
 endif()
 
