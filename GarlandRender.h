@@ -1,7 +1,9 @@
 #pragma once
-
 #include <maya/MString.h>
 #include <maya/MViewport2Renderer.h>
+
+
+class DxManager;
 
 
 class GarlandRenderOverride : public MHWRender::MRenderOverride
@@ -13,8 +15,9 @@ public:
 	MHWRender::DrawAPI supportedDrawAPIs() const override { return MHWRender::kDirectX11; }
 	MStatus setup( const MString & destination ) override;
 	MStatus cleanup() override;
-	MString uiName() const override { return mUIName; }
-	
+	MString uiName() const override { return _UIName; }
+	const MString& panelName() const { return _PanelName; }
+
 	// Custom Render Func
 	void InitRTs();
 	void CleanRTs();
@@ -23,11 +26,15 @@ public:
 	MHWRender::MRenderTarget* grColorRT() { return _RTs[0]; }
 	MHWRender::MRenderTarget* grDepthRT() { return _RTs[1]; }
 	bool grRTsValid() { return _RTs[0] && _RTs[1]; }
+	DxManager* Dx() { return dx; }
 
 protected:
-	MString mUIName;
+	MString _UIName;
+	MString _PanelName;
 	MHWRender::MRenderTargetDescription* _Desc[2];
 	MHWRender::MRenderTarget* _RTs[2];
+
+	DxManager* dx = nullptr;
 };
 
 

@@ -1,32 +1,37 @@
 #include "GarlandRender.h"
 #include <maya/MRenderTargetManager.h>
 #include <maya/MGlobal.h>
-
-// Includes for DX
-#define WIN32_LEAN_AND_MEAN
-#include <d3d11.h>
-#include <d3dx11.h>
+#include "DxManager.h"
 
 
 GarlandRenderOverride::GarlandRenderOverride(const MString & name)
-	: MRenderOverride(name) , mUIName("GarlandRender")
+	: MRenderOverride(name) , _UIName("GarlandRender")
 {
 	InitRTs();
+	_PanelName.clear();
+	dx = new DxManager(this);
 }
 
 GarlandRenderOverride::~GarlandRenderOverride()
 {
 	CleanRTs();
+
+	if (dx)
+	{
+		delete dx;
+	}
 }
 
 MStatus GarlandRenderOverride::setup( const MString & destination )
 {
 	UpdateRTs();
+	_PanelName.set(destination.asChar());
 	return MRenderOverride::setup(destination);
 }
 
 MStatus GarlandRenderOverride::cleanup()
 {
+	_PanelName.clear();
 	return MRenderOverride::cleanup();
 }
 
@@ -65,8 +70,6 @@ void GarlandRenderOverride::InitRTs()
 	const MHWRender::MRenderTargetManager* targetManager = theRenderer ? theRenderer->getRenderTargetManager() : NULL;
 	if (targetManager)
 	{
-		MGlobal::displayInfo("Get TargetManager Success!!");
-
 		unsigned int targetWidth = 0;
 		unsigned int targetHeight = 0;
 
@@ -98,13 +101,9 @@ void GarlandRenderOverride::InitRTs()
 		_RTs[1] = targetManager->acquireRenderTarget(*_Desc[1]);
 	}
 
-	if (grRTsValid())
+	if (!grRTsValid())
 	{
-		MGlobal::displayInfo("Get RenderTragets Success!!");
-	}
-	else
-	{
-		MGlobal::displayInfo("Get RenderTragets Fail!!");
+		MGlobal::displayError("Get RenderTragets Fail !");
 	}
 }
 
@@ -190,28 +189,6 @@ CustomSceneRender::CustomSceneRender(const MString& name, GarlandRenderOverride*
 
 MStatus CustomSceneRender::execute(const MHWRender::MDrawContext& drawContext)
 {	
-	MHWRender::MRenderer* theRenderer = MHWRender::MRenderer::theRenderer();
-
-	if (_gr->grRTsValid())
-	{
-		ID3D11Device* m_pD3DDevice;
-		ID3D11DeviceContext* m_pD3DDeviceContext;
-
-		m_pD3DDevice = (ID3D11Device*)theRenderer->GPUDeviceHandle();
-		if (m_pD3DDevice)
-		{
-			m_pD3DDevice->GetImmediateContext(&m_pD3DDeviceContext);
-			if (m_pD3DDeviceContext)
-			{
-				float clearColor[4] = { 1.0f, 0.f, 0.f, 0.0f };
-				m_pD3DDeviceContext->ClearRenderTargetView((ID3D11RenderTargetView*)(_gr->grColorRT()->resourceHandle()), clearColor);
-			}
-		}
-	}
-	else
-	{
-		MGlobal::displayInfo("Get RenderTraget Fail!!");
-	}
-	
+	_gr->Dx()->debug(drawContext);
 	return MStatus::kSuccess;
 }
