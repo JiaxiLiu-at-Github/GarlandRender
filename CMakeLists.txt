@@ -14,8 +14,6 @@ set(SOURCE_FILES
    GarlandRender.h
    DxManager.h
    DxManager.cpp
-   util.h
-   util.cpp
 )
 
 # set linking libraries

@@ -15,6 +15,9 @@
 #include <DirectXMath.h>
 
 
+#define SafeRelease(p) if((p)){(p)->Release(); (p)=NULL;}
+
+
 using vec3 = DirectX::XMFLOAT3;
 using vec4 = DirectX::XMFLOAT4;
 using mat4 = DirectX::XMFLOAT4X4;

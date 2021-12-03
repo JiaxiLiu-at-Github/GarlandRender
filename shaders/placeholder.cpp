@@ -1,0 +1,1 @@
+//I put an empty cpp file here since I don't know how to get CMake works with a HLSL only project
