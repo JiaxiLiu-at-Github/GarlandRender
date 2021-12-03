@@ -23,6 +23,7 @@ public:
 	DxManager(GarlandRenderOverride* gr);
 	~DxManager();
 
+	void Setup();
 	void debug(const MHWRender::MDrawContext& drawContext);
 
 protected:

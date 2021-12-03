@@ -17,16 +17,16 @@ public:
 	MStatus cleanup() override;
 	MString uiName() const override { return _UIName; }
 	const MString& panelName() const { return _PanelName; }
+	MHWRender::MRenderTarget* const* grTargetOverrideList(unsigned int& listSize);
 
 	// Custom Render Func
 	void InitRTs();
 	void CleanRTs();
 	void UpdateRTs();
-	MHWRender::MRenderTarget* const* grTargetOverrideList(unsigned int& listSize);
-	MHWRender::MRenderTarget* grColorRT() { return _RTs[0]; }
-	MHWRender::MRenderTarget* grDepthRT() { return _RTs[1]; }
-	bool grRTsValid() { return _RTs[0] && _RTs[1]; }
-	DxManager* Dx() { return dx; }
+	inline MHWRender::MRenderTarget* grColorRT() { return _RTs[0]; }
+	inline MHWRender::MRenderTarget* grDepthRT() { return _RTs[1]; }
+	inline bool grRTsValid() { return _RTs[0] && _RTs[1]; }
+	inline DxManager* Dx() { return dx; }
 
 protected:
 	MString _UIName;

@@ -93,6 +93,32 @@ DxManager::DxManager(GarlandRenderOverride* gr)
 
 DxManager::~DxManager()
 {
+	if (_dxRasterState)
+	{
+		if (!_mRasterState)
+			_dxRasterState->Release();
+		else
+			MHWRender::MStateManager::releaseRasterizerState(_mRasterState);
+		_dxRasterState = nullptr;
+		_mRasterState = nullptr;
+	}
+	if (_dxSamplerState)
+	{
+		if (!_mSamplerState)
+			_dxSamplerState->Release();
+		_dxSamplerState = nullptr;
+	}
+	if (_mSamplerState)
+	{
+		MHWRender::MStateManager::releaseSamplerState(_mSamplerState);
+		_mSamplerState = nullptr;
+	}
+
+	SafeRelease(_vertexBuffer);
+	SafeRelease(_indexBuffer);
+	SafeRelease(_vertexConstantBuffer);
+	SafeRelease(_pixelConstantBuffer);
+
 	_gr = nullptr;
 	_device = nullptr;
 	_deviceContext = nullptr;
@@ -100,8 +126,15 @@ DxManager::~DxManager()
 	_mainDepthStencilView = nullptr;
 }
 
+void DxManager::Setup()
+{
+	_mainRenderTargetView = (ID3D11RenderTargetView*)_gr->grColorRT()->resourceHandle();
+	_mainDepthStencilView = (ID3D11DepthStencilView*)_gr->grDepthRT()->resourceHandle();
+}
+
 void DxManager::debug(const MHWRender::MDrawContext& drawContext)
 {
+
 
 	MHWRender::MRenderer* theRenderer = MHWRender::MRenderer::theRenderer();
 
@@ -157,7 +190,7 @@ void DxManager::debug(const MHWRender::MDrawContext& drawContext)
 		if (_mainRenderTargetView)
 		{
 			float clearColor[4] = { 0.0f, 0.125f, 0.6f, 0.0f };
-			_deviceContext->ClearRenderTargetView(_mainRenderTargetView, clearColor);
+			//_deviceContext->ClearRenderTargetView(_mainRenderTargetView, clearColor);
 		}
 		if (_mainDepthStencilView)
 		{

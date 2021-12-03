@@ -14,17 +14,22 @@ GarlandRenderOverride::GarlandRenderOverride(const MString & name)
 
 GarlandRenderOverride::~GarlandRenderOverride()
 {
-	CleanRTs();
-
 	if (dx)
 	{
 		delete dx;
 	}
+
+	CleanRTs();
+	mOperations.clear();
+
+	cleanup();
 }
 
 MStatus GarlandRenderOverride::setup( const MString & destination )
 {
 	UpdateRTs();
+	dx->Setup();
+
 	_PanelName.set(destination.asChar());
 	return MRenderOverride::setup(destination);
 }
@@ -125,6 +130,17 @@ void GarlandRenderOverride::CleanRTs()
 			targetManager->releaseRenderTarget(_RTs[1]);
 			_RTs[1] = nullptr;
 		}
+	}
+
+	if (_Desc[0])
+	{
+		delete _Desc[0];
+		_Desc[0] = nullptr;
+	}
+	if (_Desc[1])
+	{
+		delete _Desc[1];
+		_Desc[1] = nullptr;
 	}
 }
 

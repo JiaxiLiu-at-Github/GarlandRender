@@ -8,7 +8,7 @@
 MStatus initializePlugin(MObject obj)
 {
 	MStatus status;
-	MFnPlugin plugin(obj, "JIAXI_LIU", "0.1", "Any");
+	MFnPlugin plugin(obj, "JIAXI_LIU", "0.2", "Any");
 
 	MHWRender::MRenderer* renderer = MHWRender::MRenderer::theRenderer();
 	if (renderer)
