@@ -1,3 +1,5 @@
+// Referencing the code in devkit sample "devkitBase/devkit/plug-ins/viewDX11DeviceAccess"
+
 #include "DxManager.h"
 
 #include <maya/MViewport2Renderer.h>
@@ -9,7 +11,6 @@
 #include <maya/MFnDagNode.h>
 
 #include "GarlandRender.h"
-#include "util.h"
 #include "build/shaders/unlit_vs.h"
 #include "build/shaders/unlit_ps.h"
 #include <DirectXMath.h>
